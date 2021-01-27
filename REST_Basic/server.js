@@ -31,7 +31,7 @@ var server = http.createServer(function(request, response){
             }else{
                 console.log("데이터베이스의 레코드는 ", record);
                 var arr=[];
-                response.writeHead(200, {"ConContent-Type":"text/html;charset=utf-8"});
+                response.writeHead(200, {"Content-Type":"text/html;charset=utf-8"});
                 response.end(JSON.stringify(record)); //string 화 시켜 전송
             }
         });
