@@ -72,12 +72,13 @@ class TableContent extends React.Component{
     }
 
     render(){
-        var row=[];//tr을 누적할 배열    
+        var row=[];//tr을 누적할 배열  
+        var num = this.props.dataList.length;  
         for(var i=0;i<this.props.dataList.length;i++){
             var board = this.props.dataList[i];//게시물 하나 꺼낸다
             row.push(
                 <tr>
-                    <td>{i}</td>
+                    <td>{num--}</td>
                     <td onClick={this.getItem(board.board_id)}>{board.title}</td>
                     <td>{board.writer}</td>
                     <td>{board.regdate}</td>
@@ -137,7 +138,7 @@ function regist(){
         data: JSON.stringify(json), 
         contentType:"application/json;charset=utf-8",
         success:function(responseData){
-            console.log("서버가 등록 후 보낸 코드는 ", responseData.resultCode);
+            console.log("서버가 등록후 보낸 코드는 ",responseData.resultCode);
         },
         error:function(xhr, result, error){
             console.log(xhr);
@@ -153,8 +154,7 @@ function getList(){
         success:function(responseData){
             //화면 갱신..react로...
             console.log(responseData);
-            responseData.data;
-            ReactDOM.render(<TableContent dataList={responseData}/>, document.getElementById("list-area"));
+            ReactDOM.render(<TableContent dataList={responseData.data}/>, document.getElementById("list-area"));
 
         }
     });
@@ -194,18 +194,19 @@ function connect(){
     //서버로부터 메시지가 도착했을때..
     webSocket.onmessage=function(e){
         var msg = e.data;
-        console.log("msg is ", msg);
-        var json = JSON.parse(msg);
+        
+        console.log("msg is =", msg);
+
+        var json = JSON.parse(msg);        
         console.log("웹소켓을 통해 서버로부터 받은 메시지: ", json.requestCode);
-        if(json.requestCode=="create"){//누군가에 의해 서버에 등록을 한 상태!!
-            //이 시점에 서버에 새롭게 들어간 데이터를 가져오자!!
-            //비동기로 가져와서, 화면의 일부를 react를 이용하여 출력!!
+
+        if(json.requestCode=="create"){//누군가 서버에 글 쓰면..
             getList();
         }else if(json.requestCode=="read"){
 
-        }else if(json.requestCode=="update"){ //누군가 서버에 글 수정하면..
+        }else if(json.requestCode=="update"){//누군가 서버에 글 수정하면..
             getList();
-        }else if(json.requestCode=="delete"){ //누군가 서버에 글 삭제하면..
+        }else if(json.requestCode=="delete"){//누군가 서버에 글 삭제하면..
             getList();
         }
     }
